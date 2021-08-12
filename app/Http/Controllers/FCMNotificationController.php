@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FCMNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class FCMNotificationController extends Controller
@@ -26,7 +27,7 @@ class FCMNotificationController extends Controller
         return response()->json(['message' => 'success', 'status' => '200',], 200);
     }
 
-    public function sendNotification()
+    public static function sendNotification()
     {
         $firebaseToken = FCMNotification::whereNotNull('token')->pluck('token')->all();
 
@@ -37,8 +38,8 @@ class FCMNotificationController extends Controller
         $data = [
             "registration_ids" => $firebaseToken,
             "notification" => [
-                "title" => 'Title Notification '.rand(00000, 99999),
-                "body" => 'Notification body '.rand(00000, 99999),
+                "title" => 'Title Notification ' . Carbon::now(),
+                "body" => 'Notification body ' . Carbon::now(),
                 "content_available" => true,
                 "priority" => "high",
             ]
@@ -61,6 +62,6 @@ class FCMNotificationController extends Controller
 
         $response = curl_exec($ch);
 
-        return response()->json(['message' => 'success '.$response, 'status' => '200',], 200);
+        return response()->json(['message' => 'success ' . $response, 'status' => '200',], 200);
     }
 }
